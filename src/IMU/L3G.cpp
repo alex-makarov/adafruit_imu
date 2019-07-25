@@ -1,7 +1,8 @@
 #include "L3G.h"
 #include "../sys/I2C.h"
 
-#define L3GD20_ADDRESS_SA0_HIGH   (0xD6 >> 1)
+//#define L3GD20_ADDRESS_SA0_HIGH   (0xD6 >> 1)
+#define L3GD20_ADDRESS_SA0_HIGH   (0xD2 >> 1)
 #define BUS	1
 
 // Construct I2C class

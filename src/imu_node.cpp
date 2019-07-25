@@ -137,8 +137,8 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "talker");
   ros::Time::init();
   ros::NodeHandle node;
-  ros::Publisher imu_pub = node.advertise<sensor_msgs::Imu>("imu", 1000);
-  ros::Publisher mag_pub = node.advertise<sensor_msgs::MagneticField>("mag", 1000);
+  ros::Publisher imu_pub = node.advertise<sensor_msgs::Imu>("imu/data_raw", 1000);
+  ros::Publisher mag_pub = node.advertise<sensor_msgs::MagneticField>("imu/mag", 1000);
   
   ros::Rate loop_rate(45);
   ROS_INFO("Starting imu advertising, %d", imu_on);
@@ -165,27 +165,27 @@ int main(int argc, char **argv)
       imu_msg.angular_velocity.y = Gyro_Scaled_Y(gyro_y);
       imu_msg.angular_velocity.z = Gyro_Scaled_Z(gyro_z);
 
-      imu_pub.publish(imu_msg);
 
-      if (counter > 5)  // Read compass data at 10Hz... (5 loop runs)
-	{
-	  counter=0;
-	  Read_Compass();    // Read I2C magnetometer
-	  Compass_Heading(); // Calculate magnetic heading
+//	  counter=0;
+      Read_Compass();    // Read I2C magnetometer
+      Compass_Heading(); // Calculate magnetic heading
 
-	  mag_msg.header.stamp = ros::Time::now();
-	  mag_msg.magnetic_field.x = magnetom_x;  
-	  mag_msg.magnetic_field.y = magnetom_y;  
-	  mag_msg.magnetic_field.z = magnetom_z;
-	  mag_pub.publish(mag_msg);
-	}
-      //Matrix_update();
-      //Normalize();
-      //Drift_correction();
-      //Euler_angles();
-      //printf ("\033[1Aroll: %.2f \tpitch: %.2f  \tyaw: %.2f\n", roll, pitch, yaw);
+      mag_msg.header.stamp = ros::Time::now();
+      mag_msg.magnetic_field.x = magnetom_x;  
+      mag_msg.magnetic_field.y = magnetom_y;  
+      mag_msg.magnetic_field.z = magnetom_z;
+      mag_pub.publish(mag_msg);
+
+      Matrix_update();
+      Normalize();
+      Drift_correction();
+      Euler_angles();
+      imu_msg.orientation.x = pitch;
+      imu_msg.orientation.y = roll;
+      imu_msg.orientation.z = yaw;
       
-
+      imu_pub.publish(imu_msg);
+	  //	  printf ("\033[1Aroll: %.2f \tpitch: %.2f  \tyaw: %.2f\n", roll, pitch, yaw);
     }
 
     
