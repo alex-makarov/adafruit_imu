@@ -134,7 +134,7 @@ void setup_IMU()
 int main(int argc, char **argv)
 {
 
-  ros::init(argc, argv, "talker");
+  ros::init(argc, argv, "imu_node");
   ros::Time::init();
   ros::NodeHandle node;
   ros::Publisher imu_pub = node.advertise<sensor_msgs::Imu>("imu/data_raw", 1000);
@@ -156,6 +156,7 @@ int main(int argc, char **argv)
       Read_Accel();
 
       imu_msg.header.stamp = ros::Time::now();
+      imu_msg.header.frame_id = "imu";
 
       imu_msg.linear_acceleration.x = ToSi(accel_x); //(float)accel_x / GRAVITY * FREE_ACC;
       imu_msg.linear_acceleration.y = ToSi(accel_y); //(float)accel_y / GRAVITY * FREE_ACC;
